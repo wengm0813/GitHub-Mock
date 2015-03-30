@@ -3,6 +3,14 @@
 }
 
 a {
-	color: #EF1F2F;
+	color: #6666ff;
 	text-decoration: none;
+    font: 15px Verdana, sans-serif;
 }
+
+
+div {
+    text-decoration: none;
+    font: 15px Verdana, sans-serif;
+}
+

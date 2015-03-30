@@ -44,7 +44,38 @@ class User extends Password{
 			return true;
 		}		
 	}
-	
+    
+    public function deletefriend($firstname,$lastname,$username){
+        echo "222";
+            $stmt=$this->_db->prepare('Delete From `Friendship` Where SenderID in (select UserID From `User` Where First_Name=:1f and Last_Name=:1l) and RecipientID in (select UserID from `User` where username=:2f)');
+            $stmt->execute(array(
+                ':1f'=>$firstname,
+                ':1l'=>$lastname,
+                ':2f'=>$username));
+        echo "33333";
+
+        $query="Delete From `Friendship` Where RecipientID in (select UserID From `User` Where First_Name=".$firstname.
+        "and Last_Name=".$lastname." and SenderID in (select UserID from `User` where username=".$username;
+
+         $this->_db->query("DEALLOCATE PREPARE stmt");
+        $stmt=$this->_db->prepare('Delete From `Friendship` Where RecipientID in (select UserID From `User` Where First_Name=:1f and Last_Name=:1l) and SenderID in (select UserID from `User` where username=:2f))');
+
+        echo "666";
+
+        $stmt->execute(array(
+                ':1f'=>$firstname,
+                ':1l'=>$lastname,
+                ':2f'=>$username));
+
+        echo "4444";
+
+
+    }
+
+    public function deletefriend2($firstname,$lastname,$username){
+
+    }
+
 }
 
 

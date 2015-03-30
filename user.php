@@ -6,7 +6,7 @@ class User extends Password{
 
     function __construct($db){
     	parent::__construct();
-
+    
     	$this->_db = $db;
     }
 
@@ -14,10 +14,14 @@ class User extends Password{
 
 		try {
 			$stmt = $this->_db->prepare('SELECT Password FROM User WHERE username = :username');
+            // echo
 			$stmt->execute(array('username' => $username));
+			//echo $username;
 
 			$row = $stmt->fetch();
-			return $row['password'];
+            //echo $row['Password'];
+
+			return $row['Password'];
 
 		} catch(PDOException $e) {
 		    echo '<p class="bg-danger">'.$e->getMessage().'</p>';
@@ -28,13 +32,14 @@ class User extends Password{
 
 		$hashed = $this->get_user_hash($username);
 
+        //echo $hashed;
 		if($this->password_verify($password,$hashed) == 1){
-
+		    
 		    $_SESSION['loggedin'] = true;
 		    return true;
-		}
+		} 	
 	}
-
+		
 	public function logout(){
 		session_destroy();
 	}
@@ -42,9 +47,9 @@ class User extends Password{
 	public function is_logged_in(){
 		if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true){
 			return true;
-		}
+		}		
 	}
-
+	
 }
 
 

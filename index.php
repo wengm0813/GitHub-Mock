@@ -17,23 +17,23 @@ if(isset($_POST['submit'])){
 		if(!empty($row['username'])){
 			$error[] = 'Username provided is already in use.';
 		}
-			
+
 	}
 
-	if(strlen($_POST['password']) < 3){
+	if(strlen($_POST['password']) < 8){
 		$error[] = 'Password is too short.';
 	}
 
-	if(strlen($_POST['passwordConfirm']) < 3){
-		$error[] = 'Confirm password is too short.';
+	if(strlen($_POST['passwordConfirm']) < 8){
+		$error[] = 'Password is too short.';
 	}
 
 	if($_POST['password'] != $_POST['passwordConfirm']){
 		$error[] = 'Passwords do not match.';
 	}
 
-    if (strlen($_POST['firstName']) < 0) {
-        $firstName = "";
+    if (strlen($_POST['firstName']) == 0) {
+        $error[] = 'Please enter your first name.';
     }
     else {
         $firstName = $_POST['firstName'];
@@ -41,13 +41,12 @@ if(isset($_POST['submit'])){
     }
 
 
-    if (strlen($_POST['lastName']) < 0) {
-        $lastName = "";
+    if (strlen($_POST['lastName']) == 0) {
+        $error[] = 'Please enter your last name.';
     }
 
     else {
         $lastName = $_POST['lastName'];
-
     }
 
     if (strlen($_POST['middleName']) < 0) {
@@ -58,25 +57,25 @@ if(isset($_POST['submit'])){
     }
 
     if (strlen($_POST['homeTownCity']) < 0) {
-        $homeTownCity = "";}
+        $error[] = 'Please enter your home city.';}
 
     else{
         $homeTownCity = $_POST['homeTownCity'];
-
     }
 
-    if (strlen($_POST['homeTownState']) < 0) {
-        $homeTownState = "";}
+    if (strlen($_POST['homeTownState']) == 0) {
+        $error[] = 'Please enter your home town state.';;}
 
     else{
         $homeTownState = $_POST['homeTownState'];
 
     }
-    if (strlen($_POST['DOB']) < 0) {
-        $DOB = 0;}
+    if (strlen($_POST['DOB']) != 4 || !is_numeric($_POST['DOB'])) {
+        $error[] = 'Birth year must be a 4 digit number.';
+    }
 
     else{
-        $homeTownState = $_POST['DOB'];
+        $DOB = $_POST['DOB'];
 
     }
 
@@ -134,7 +133,6 @@ require('layout/header.php');
 
 
 <div class="container">
-
 	<div class="row">
 
 	    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
@@ -153,7 +151,7 @@ require('layout/header.php');
 
 				//if action is joined show sucess
 				if(isset($_GET['action']) && $_GET['action'] == 'joined'){
-					echo "<h2 class='bg-success'>Registration successful, please check your email to activate your account.</h2>";
+					echo "<h2 class='bg-success'>Registration successful.</h2>";
 				}
 				?>
 
@@ -184,7 +182,7 @@ require('layout/header.php');
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <input type="text" name="middleName" id="middleName" class="form-control input-lg" placeholder="Middle Name" tabindex="4">
+                            <input type="text" name="middleName" id="middleName" class="form-control input-lg" placeholder="Middle Name (optional)" tabindex="4">
                         </div>
                     </div>
                 </div>
@@ -214,7 +212,7 @@ require('layout/header.php');
                 <div class="row">
                     <div class="col-xs-6 col-md-6">
                         <div class="form-group">
-                            <input type="text" name="DOB" id="DOB" class="form-control input-lg" placeholder="Date of Birth" tabindex="6">
+                            <input type="text" name="DOB" id="DOB" class="form-control input-lg" placeholder="Year of Birth" tabindex="6">
 
                         </div>
                     </div>

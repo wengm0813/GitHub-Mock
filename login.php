@@ -21,7 +21,7 @@ if(isset($_POST['submit'])){
 		exit;
 	
 	} else {
-		$error[] = 'Wrong username or password or your account has not been activated.';
+		$error[] = 'Wrong username or password';
 	}
 
 }//end if submit
