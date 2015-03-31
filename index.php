@@ -21,12 +21,9 @@ if(isset($_POST['submit'])){
 	}
 
 	if(strlen($_POST['password']) < 8){
-		$error[] = 'Password is too short.';
+		$error[] = 'Password is too short, at least 8 character.';
 	}
 
-	if(strlen($_POST['passwordConfirm']) < 8){
-		$error[] = 'Password is too short.';
-	}
 
 	if($_POST['password'] != $_POST['passwordConfirm']){
 		$error[] = 'Passwords do not match.';
@@ -92,8 +89,8 @@ if(isset($_POST['submit'])){
 		try {
 
 			//insert into database with a prepared statement
-            $stmt = $db->prepare ('INSERT INTO User (username,Password,Email,First_Name,Middle_Initial,Last_Name, Hometown_City, Hometown_State, Year_Of_Birth)
-                                      VALUES (:username, :password, :email, :firstName, :middleName,:lastName,:homeTownCity,:homeTownState,:DOB)');
+            $stmt = $db->prepare ('INSERT INTO User (username,Password,Email,First_Name,Middle_Initial,Last_Name, Hometown_City, Hometown_State, Year_Of_Birth,Privacy)
+                                      VALUES (:username, :password, :email, :firstName, :middleName,:lastName,:homeTownCity,:homeTownState,:DOB,:privacy)');
 
             $stmt->execute(array(
                 ':username' => $_POST['username'],
@@ -104,11 +101,23 @@ if(isset($_POST['submit'])){
                 ':lastName' => $lastName,
                 ':homeTownCity' => $homeTownCity,
                 ':homeTownState' => $homeTownState,
-                ':DOB' => $DOB
+                ':DOB' => $DOB,
+                ':privacy' => $_POST['privacy']
+
 
 
             ));
-            $id = $db->lastInsertId('memberID');
+            $id = $db->lastInsertId();
+            $checkbox1 = $_POST['interest'];
+            foreach($checkbox1 as $value){
+                //echo $checkbox1[i];
+                IF ($value =="")
+                {
+                    CONTINUE;
+                }
+                $sql_input = "INSERT INTO UserInterests VALUES ($id,'$value')";
+                $db->query($sql_input);
+            }
 
 
 			//redirect to index page
@@ -182,7 +191,7 @@ require('layout/header.php');
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <input type="text" name="middleName" id="middleName" class="form-control input-lg" placeholder="Middle Name (optional)" tabindex="4">
+                            <input type="text" name="middleName" id="middleName" class="form-control input-lg" placeholder="Middle Initial (optional)" tabindex="4">
                         </div>
                     </div>
                 </div>
@@ -212,11 +221,49 @@ require('layout/header.php');
                 <div class="row">
                     <div class="col-xs-6 col-md-6">
                         <div class="form-group">
-                            <input type="text" name="DOB" id="DOB" class="form-control input-lg" placeholder="Year of Birth" tabindex="6">
+                            <input type="text" name="DOB" id="DOB" class="form-control input-lg" placeholder="Year of Birth" tabindex="7">
 
                         </div>
                     </div>
+
+                    <div class="col-xs-6 col-md-6">
+                        <div class="form-group">
+                        <select class="form-control input-lg" name = "privacy" id="privacy" tabindex="7">
+                            <option value = "1">Privacy Setting </option>
+                            <option value = "1">Low </option>
+                            <option value = "2">Medium </option>
+                            <option value = "3">High </option>
+                        </select>
+
+                        </div>
+
+                    </div>
                 </div>
+
+
+                    <div class="form-group" class="form-control input-lg" >
+                        <p>Choose your interest <p>
+
+                            <label class="checkbox-inline" >
+                                <input name = "interest[0]" id= "interest[]" type="checkbox" value="Game Design">Game Design
+                            </label>
+
+                            <label class="checkbox-inline">
+                                <input name = "interest[1]" id= "interest[]"type="checkbox" value="Contemporary Arts">Contemporary Arts
+                            </label>
+
+                            <label class="checkbox-inline">
+                                <input name = "interest[2]" id= "interest[]"type="checkbox" value="Sports">Sports
+                            </label>
+
+                            <label class="checkbox-inline">
+                                <input name = "interest[3]" id= "interest[]"type="checkbox" value="Other">Other
+                            </label>
+
+
+                </div>
+
+
 
 				
 				<div class="row">

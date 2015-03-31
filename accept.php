@@ -23,7 +23,7 @@ require('layout/header.php');
 
             <h2>Accept friend request</h2>
 
-            <p>Not <?php echo $_SESSION['username']; ?>? <a href='logout.php'>Logout</a></p>
+            <p><a href='memberpage.php'>Back to Member Page</a></p>
             <hr>
 
         </div>
@@ -48,21 +48,13 @@ require('layout/header.php');
                 $query = "UPDATE Friendship SET Pending = 1 WHERE SenderID = $user_id1 AND RecipientID = $user_id2;";
                 $query2 = "INSERT INTO Friendship (SenderID, RecipientID, Pending) VALUES ($user_id2, $user_id1, 1);;";
 
-                if(!$db->query($query)) {
-                    echo "Accept Friend Failed! Automatic Return to Member Page after 3 Sec";
-                }
-                else{
-                    echo "Friend request accepted. Return to Member Page after 3 Sec";
-                }
-                if(!$db->query($query2)) {
+                if(!$db->query($query) || !$db->query($query2)) {
                     echo "Accept Friend Failed! Automatic Return to Member Page after 3 Sec";
                 }
                 else{
                     echo "Friend request accepted. Return to Member Page after 3 Sec";
                 }
             }
-
-
             ?>
         </div>
 

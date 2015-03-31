@@ -12,12 +12,14 @@ $title = 'Change Profile Page';
 //$row = $stmt->fetch();
 //return $row['Password'];
 try {
-    $query = 'SELECT First_Name,Middle_Initial,Last_Name,Email,Hometown_City,Hometown_State,Year_Of_Birth FROM User WHERE username = :user';
+    $query = 'SELECT UserID, First_Name,Middle_Initial,Last_Name,Email,Hometown_City,Hometown_State,Year_Of_Birth,Privacy FROM User WHERE username = :user';
     $statement = $db->prepare($query);
     $params = array(':user' => $_SESSION['username']);
     $statement->execute($params);
     $user_data = $statement->fetch();
 
+
+    $_SESSION['myUserID'] = $user_data['UserID'];
     $_SESSION['myFirst_Name'] = $user_data['First_Name'];
     $_SESSION['myMiddlme_Initial'] = $user_data['Middle_Initial'];
     $_SESSION['myLast_Name'] = $user_data['Last_Name'];
@@ -25,13 +27,45 @@ try {
     $_SESSION['myCity'] = $user_data['Hometown_City'];
     $_SESSION['myState'] = $user_data['Hometown_State'];
     $_SESSION['myDOB'] = $user_data['Year_Of_Birth'];
+    $_SESSION['myPrivacy'] = $user_data['Privacy'];
+
 
     } catch(PDOException $e) {
         echo '<p class="bg-danger">'.$e->getMessage().'</p>';
     }
 
+$usrid = $_SESSION['myUserID'];
+
+try {
+    $query2 = 'SELECT Interest From UserInterests Where UserID=:ID';
+    $statement2 = $db->prepare($query2);
+    $params2 = array(':ID' => $_SESSION['myUserID']);
+    $statement2->execute($params2);
+
+
+    $_SESSION['myInterest']=array();
+   foreach($statement2 as $statement2){
+       $_SESSION['myInterest'][]=$statement2['Interest'];
+   }
+
+} catch(PDOException $e) {
+    echo '<p class="bg-danger">'.$e->getMessage().'</p>';
+}
+
+
+
+
 //if form has been submitted process it
 if(isset($_POST['submit'])){
+    try {
+        $query3 = 'DELETE From UserInterests Where UserID=:ID';
+        $statement3 = $db->prepare($query3);
+        $params3 = array(':ID' => $usrid);
+        $statement3->execute($params3);
+
+    } catch(PDOException $e) {
+        echo '<p class="bg-danger">'.$e->getMessage().'</p>';
+    }
 
 
 
@@ -68,6 +102,8 @@ if(isset($_POST['submit'])){
     else{
         $homeTownCity = $_POST['homeTownCity'];
 
+
+
     }
 
     if (strlen($_POST['homeTownState']) == 0) {
@@ -85,6 +121,9 @@ if(isset($_POST['submit'])){
         $DOB = $_POST['DOB'];
 
     }
+    $checkbox1 = $_POST['interest'];
+
+
 
     //if no errors have been created carry on
     if(!isset($error)){
@@ -98,7 +137,8 @@ if(isset($_POST['submit'])){
 
             //insert into database with a prepared statement
             $stmt = $db->prepare ('UPDATE User SET Email = :email,First_Name = :firstName,Middle_Initial = :middleName,
-                                    Last_Name = :lastName, Hometown_City = :homeTownCity, Hometown_State = :homeTownState, Year_Of_Birth =:DOB
+                                    Last_Name = :lastName, Hometown_City = :homeTownCity, Hometown_State = :homeTownState, Year_Of_Birth =:DOB,
+                                    Privacy = :privacy
                                     WHERE username = :user');
             $stmt->execute(array(
 
@@ -109,10 +149,35 @@ if(isset($_POST['submit'])){
                 ':homeTownCity' => $homeTownCity,
                 ':homeTownState' => $homeTownState,
                 ':DOB' => $DOB,
-                ':user' => $_SESSION['username']
+                ':user' => $_SESSION['username'],
+                ':privacy' =>$_POST['privacy']
 
 
             ));
+
+
+            /*foreach($checkbox1 as $value){
+                //echo $checkbox1[i];
+                IF ($value =="")
+                {
+                    CONTINUE;
+                }
+                $sql_input = "INSERT INTO UserInterests VALUES (:usrid,'$value')";
+                $statement4 = $db->prepare($sql_input);
+                $params4 = array(':usrid' => $_SESSION['myUserID']);
+                $statement4->execute($params4);
+            }*/
+
+            foreach($checkbox1 as $value){
+                //echo $checkbox1[i];
+                IF ($value =="")
+                {
+                    CONTINUE;
+                }
+                $sql_input = "INSERT INTO UserInterests VALUES ($usrid,'$value')";
+                $db->query($sql_input);
+            }
+
             header("Refresh:0");
 
             exit;
@@ -127,9 +192,15 @@ if(isset($_POST['submit'])){
 }
 
 
+
+
+
+
 //include header template
 require('layout/header.php');
 ?>
+
+
 
 <div class="container">
 
@@ -204,23 +275,77 @@ require('layout/header.php');
                         <div class="form-group">
 
                             <p> Date of Birth: </p>
-                            <input type="text" name="DOB" id="DOB" class="form-control input-lg" value="<?php echo  $_SESSION['myDOB']; ?>"tabindex="6">
+                            <input type="text" name="DOB" id="DOB" class="form-control input-lg" value="<?php echo  $_SESSION['myDOB']; ?>"tabindex="7">
 
                         </div>
                     </div>
+
+
+
+
+                    <div class="col-xs-6 col-md-6">
+                        <div class="form-group">
+                            <p> Your Profile Privacy Setting: </p>
+                            <select class="form-control input-lg" name = "privacy" id="privacy" tabindex="7">
+                                <option value = "1" <?php if($_SESSION['myPrivacy']=="1") echo "selected";?>>Low</option>
+                                <option value = "2"<?php if($_SESSION['myPrivacy']=="2") echo "selected";?>>Medium</option>
+                                <option value = "3"<?php if($_SESSION['myPrivacy']=="3") echo "selected";?>>High</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                    <div class="form-group"  class="form-control input-lg">
+                        <p>Choose your interest <p>
+
+
+                            <label class="checkbox-inline">
+                            <?php if(in_array('Game Design',$_SESSION['myInterest'] )){
+                                echo '<input name = "interest[0]" id= "interest[]" type="checkbox" value="Game Design" checked>Game Design';}
+                                else {
+                                    echo ' <input name = "interest[0]" id= "interest[]" type="checkbox" value="Game Design">Game Design';
+                                }
+                            ?>
+                            </label>
+
+                            <label class="checkbox-inline">
+                                <?php if(in_array('Contemporary Arts',$_SESSION['myInterest'] )){
+                                    echo '<input name = "interest[1]" id= "interest[]" type="checkbox" value="Contemporary Arts" checked>Contemporary Arts';}
+                                else echo ' <input name = "interest[1]" id= "interest[]" type="checkbox" value="Contemporary Arts">Contemporary Arts';
+                                ?>
+                            </label>
+
+                            <label class="checkbox-inline">
+                                <?php if(in_array('Sports',$_SESSION['myInterest'] )){
+                                    echo '<input name = "interest[2]" id= "interest[]" type="checkbox" value="Sports" checked>Sports';}
+                                else echo ' <input name = "interest[2]" id= "interest[]" type="checkbox" value="Sports">Sports';
+                                ?>
+                            </label>
+
+                            <label class="checkbox-inline">
+                                <?php if(in_array('Other',$_SESSION['myInterest'] )){
+                                    echo '<input name = "interest[3]" id= "interest[]" type="checkbox" value="Other" checked>Other';}
+                                else echo ' <input name = "interest[3]" id= "interest[]" type="checkbox" value="Other">Other';
+                                ?>
+                            </label>
+
+
                 </div>
 
 
                 <div class="row">
-                    <div class="col-xs-6 col-md-6"><input type="submit" name="submit" value="Save Change " class="btn btn-primary btn-block btn-lg" tabindex="5"></div>
-                </div>
+                    <div class="col-xs-6 col-md-6"><input type="submit" name="submit" value="Save Change " class="btn btn-primary btn-block btn-lg" tabindex="8"></div>
+                 </div>
             </form>
         </div>
     </div>
 
 </div>
-
-
 
 
 

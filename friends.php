@@ -86,7 +86,7 @@ require('layout/header.php');
 
                 foreach($statement as $statement ) {
                     $first = $statement['First_Name'];
-                    $last = $statement['SenderID'];
+                    $last = $statement['Last_Name'];
                     $RecipientID= $statement['RecipientID'];
                     $senderID = $statement['SenderID'];
 

@@ -23,7 +23,7 @@ require('layout/header.php');
 
             <h2>Ignore friend request</h2>
 
-            <p>Not <?php echo $_SESSION['username']; ?>? <a href='logout.php'>Logout</a></p>
+            <p><a href='memberpage.php'>Back to Member Page</a></p>
             <hr>
 
         </div>
@@ -46,13 +46,7 @@ require('layout/header.php');
                 global $db;
                 $query = "DELETE FROM Friendship WHERE SenderID = $user_id1 AND RecipientID = $user_id2;";
                 $query2 = "DELETE FROM Friendship WHERE SenderID = $user_id2 AND RecipientID = $user_id1;";
-                if(!$db->query($query)) {
-                    echo "Ignore request Failed! Automatic Return to Member Page after 3 Sec";
-                }
-                else{
-                    echo "Friend request ignored. Return to Member Page after 3 Sec";
-                }
-                if(!$db->query($query2)) {
+                if(!$db->query($query) || !$db->query($query2)) {
                     echo "Ignore request Failed! Automatic Return to Member Page after 3 Sec";
                 }
                 else{

@@ -63,9 +63,10 @@ require('layout/header.php');
 
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
 
-            <h2>Reset Password - Welcome <?php echo $_SESSION['username']; ?></h2>
+            <h2>Reset Password - <?php echo $_SESSION['username']; ?></h2>
 
-            <p><a href='logout.php'>Logout</a></p>
+            <p><a href='memberpage.php'>Back to Member Page</a></p>
+
             <hr>
 
         </div>

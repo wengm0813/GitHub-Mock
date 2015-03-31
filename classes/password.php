@@ -193,23 +193,12 @@ Class Password {
      * @return boolean If the password matches the hash
      */
     public function password_verify($password, $hash) {
-        //echo 'one',$hash;
 
         if (!function_exists('crypt')) {
             trigger_error("Crypt must be loaded for password_verify to function", E_USER_WARNING);
             return false;
         }
 
-        //$ret = crypt($password, $hash);
-        //echo '</br>','password/b: ',$password;
-
-        //echo '</br>','hash: ',$hash;
-        //echo '</br>','ret: ', $ret;
-        //echo '</br>','strlen/hash: ', strlen($hash);
-        //echo '</br>','strlen/ret: ', strlen($ret);
-
-
-        //echo ' four',$hash;
         $status = 0;
 
         for ($i = 0; $i < strlen($password); $i++) {
