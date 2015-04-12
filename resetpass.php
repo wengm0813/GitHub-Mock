@@ -11,12 +11,8 @@ $title = 'Reset Password Page';
 if(isset($_POST['submit'])){
 
     //basic validation
-    if(strlen($_POST['password']) < 3){
-        $error[] = 'Password is too short.';
-    }
-
-    if(strlen($_POST['passwordConfirm']) < 3){
-        $error[] = 'Confirm password is too short.';
+    if(strlen($_POST['password']) < 8){
+        $error[] = 'Password is too short, at least 8 character';
     }
 
     if($_POST['password'] != $_POST['passwordConfirm']){
@@ -66,6 +62,16 @@ require('layout/header.php');
             <h2>Reset Password - <?php echo $_SESSION['username']; ?></h2>
 
             <p><a href='memberpage.php'>Back to Member Page</a></p>
+
+            <?php
+            //check for any errors
+            if(isset($error)){
+                foreach($error as $error){
+                    echo '<p class="bg-danger">'.$error.'</p>';
+                }
+            }
+            ?>
+
 
             <hr>
 

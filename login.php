@@ -17,6 +17,11 @@ if(isset($_POST['submit'])){
 
 	else if($user->login($username,$password)){
 		$_SESSION['username'] = $username;
+        $stmt = $db->prepare('SELECT UserID FROM User WHERE username = :username ');
+        $stmt->execute(array('username' => $username));
+
+        $row = $stmt->fetch();
+        $_SESSION['UserID']=$row['UserID'];
 		header('Location: memberpage.php');
 		exit;
 	

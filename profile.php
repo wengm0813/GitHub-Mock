@@ -21,7 +21,7 @@ try {
 
     $_SESSION['myUserID'] = $user_data['UserID'];
     $_SESSION['myFirst_Name'] = $user_data['First_Name'];
-    $_SESSION['myMiddlme_Initial'] = $user_data['Middle_Initial'];
+    $_SESSION['myMiddle_Initial'] = $user_data['Middle_Initial'];
     $_SESSION['myLast_Name'] = $user_data['Last_Name'];
     $_SESSION['myEmail'] = $user_data['Email'];
     $_SESSION['myCity'] = $user_data['Hometown_City'];
@@ -68,17 +68,29 @@ if(isset($_POST['submit'])){
     }
 
 
-
-    if (strlen($_POST['email']) == 0) {
+    /*if (!filter_var(strlen($_POST['email'], FILTER_VALIDATE_EMAIL))){
         $email = $_SESSION['myEmail'];
+        $error[] = 'Email is either empty or not correct.';
     }
     else {
         $email = $_POST['email'];
+
+    }*/
+
+    if (empty($_POST["email"])) {
+        $email = $_SESSION['myEmail'];
+        $error[] = 'Email is empty.';
+    }
+    else {
+
+            $email = $_POST['email'];
+
 
     }
 
     if (strlen($_POST['firstName']) == 0) {
         $firstName = $_SESSION['myFirst_Name'];
+        $error[] = 'First Name cannot be empty.';
     }
     else {
         $firstName = $_POST['firstName'];
@@ -88,6 +100,7 @@ if(isset($_POST['submit'])){
 
     if (strlen($_POST['lastName']) == 0) {
         $lastName =  $_SESSION['myLast_Name'];
+        $error[] = 'Last Name cannot be empty.';
     }
 
     else {
@@ -95,9 +108,26 @@ if(isset($_POST['submit'])){
 
     }
 
+    if (strlen($_POST['middleName']) > 1) {
+        $error[] = 'Middle Initial just 1 character.';
+        $firstName = $_SESSION['myMiddle_Initial'];
+
+    }
+
+    if (strlen($_POST['middleName']) == 0) {
+        $middleName = "";
+
+    }
+    else {
+        $middleName = $_POST['middleName'];
+
+    }
+
 
     if (strlen($_POST['homeTownCity']) == 0) {
-        $homeTownCity = $_SESSION['myCity'];}
+        $homeTownCity = $_SESSION['myCity'];
+        $error[] = 'Home city Cannot be empty.';
+    }
 
     else{
         $homeTownCity = $_POST['homeTownCity'];
@@ -107,21 +137,33 @@ if(isset($_POST['submit'])){
     }
 
     if (strlen($_POST['homeTownState']) == 0) {
-        $homeTownState =  $_SESSION['myState'];}
+        $homeTownState =  $_SESSION['myState'];
+        $error[] = 'Home state Cannot be empty.';
+    }
 
     else{
         $homeTownState = $_POST['homeTownState'];
 
     }
     if (strlen($_POST['DOB']) != 4 || !is_numeric($_POST['DOB'])) {
+
         $DOB =  $_SESSION['myDOB'];
+        $error[] = 'Birth Year must be year, format 1994.';
     }
 
     else{
         $DOB = $_POST['DOB'];
 
     }
-    $checkbox1 = $_POST['interest'];
+
+
+    if(!isset($_POST['interest'])){
+        $error[] = "Please choose at least one interest";
+    }
+    else
+    {
+        $checkbox1 = $_POST['interest'];
+    }
 
 
 
@@ -136,7 +178,7 @@ if(isset($_POST['submit'])){
         try {
 
             //insert into database with a prepared statement
-            $stmt = $db->prepare ('UPDATE User SET Email = :email,First_Name = :firstName,Middle_Initial = :middleName,
+            $stmt = $db->prepare ('UPDATE User SET Email = :email,First_Name = :firstName, Middle_Initial = :middleName,
                                     Last_Name = :lastName, Hometown_City = :homeTownCity, Hometown_State = :homeTownState, Year_Of_Birth =:DOB,
                                     Privacy = :privacy
                                     WHERE username = :user');
@@ -210,6 +252,15 @@ require('layout/header.php');
 
             <h2>Change Profile -<?php echo $_SESSION['username']; ?></h2>
             <p><a href='memberpage.php'>Back to Member Page</a></p>
+            <?php
+            //check for any errors
+            if(isset($error)){
+                foreach($error as $error){
+                    echo '<p class="bg-danger">'.$error.'</p>';
+                }
+            }
+            ?>
+
             <hr>
 
         </div>
@@ -226,7 +277,7 @@ require('layout/header.php');
 
                 <div class="form-group">
                     <p> Email: </p>
-                    <input type="email" name="email" id="email" class="form-control input-lg" placeholder="<?php echo $_SESSION['myEmail']; ?>" value="<?php echo $_SESSION['myEmail']; ?>" tabindex="2">
+                    <input type="email" name="email" id="email" class="form-control input-lg"  value="<?php echo $_SESSION['myEmail']; ?>" tabindex="2">
                 </div>
 
                 <div class="row">
@@ -234,13 +285,13 @@ require('layout/header.php');
                         <div class="form-group">
                             <p> First Name: </p>
 
-                            <input type="text" name="firstName" id="firstName" class="form-control input-lg" value="<?php echo $_SESSION['myFirst_Name']; ?>" placeholder="<?php echo $_SESSION['myFirst_Name']; ?>" tabindex="4">
+                            <input type="text" name="firstName" id="firstName" class="form-control input-lg" value="<?php echo $_SESSION['myFirst_Name']; ?>"  tabindex="4">
                         </div>
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <div class="form-group">
                             <p> Middle Initial: </p>
-                            <input type="text" name="middleName" id="middleName" class="form-control input-lg" placeholder="<?php echo  $_SESSION['myMiddlme_Initial']; ?>" value = "<?php echo  $_SESSION['myMiddlme_Initial']; ?>"tabindex="4">
+                            <input type="text" name="middleName" id="middleName" class="form-control input-lg" value = "<?php echo  $_SESSION['myMiddle_Initial']; ?>" tabindex="4">
                         </div>
                     </div>
                 </div>

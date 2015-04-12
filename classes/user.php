@@ -46,23 +46,38 @@ class User extends Password{
 	}
     
     public function deletefriend($firstname,$lastname,$username){
-            $stmt=$this->_db->prepare('Delete From `Friendship` Where SenderID in (select UserID From `User` Where First_Name=:1f and Last_Name=:1l) and RecipientID in (select UserID from `User` where username=:2f)');
-            $stmt->execute(array(
-                ':1f'=>$firstname,
-                ':1l'=>$lastname,
-                ':2f'=>$username));
-//        $query="Delete From `Friendship` Where RecipientID in (select UserID From `User` Where First_Name=".$firstname.
-//        "and Last_Name=".$lastname." and SenderID in (select UserID from `User` where username=".$username;
-//
-//         $this->_db->query("DEALLOCATE PREPARE stmt");
+        $stmt=$this->_db->prepare('Delete From `Friendship` Where SenderID in (select UserID From `User` Where First_Name=:1f and Last_Name=:1l) and RecipientID in (select UserID from `User` where username=:2f)');
+        $stmt->execute(array(
+            ':1f'=>$firstname,
+            ':1l'=>$lastname,
+            ':2f'=>$username));
+    //        $query="Delete From `Friendship` Where RecipientID in (select UserID From `User` Where First_Name=".$firstname.
+    //        "and Last_Name=".$lastname." and SenderID in (select UserID from `User` where username=".$username;
+    //
+    //         $this->_db->query("DEALLOCATE PREPARE stmt");
         $stmt2=$this->_db->prepare("Delete From `Friendship` Where RecipientID in (select UserID From `User` Where First_Name=:rf and Last_Name=:rl) and SenderID in (select UserID from `User` where username=:un)");
 
 
 
         $stmt2->execute(array(
-                ':rf'=>$firstname,
-                ':rl'=>$lastname,
-                ':un'=>$username));
+            ':rf'=>$firstname,
+            ':rl'=>$lastname,
+            ':un'=>$username));
+    }
+
+    public function deleteproject($projid,$creatorid){
+        //$stmt=$this->_db->prepare('Delete From `Friendship` Where SenderID in (select UserID From `User` Where First_Name=:1f and Last_Name=:1l) and RecipientID in (select UserID from `User` where username=:2f)');
+        //$query="DELETE FROM `Project` WHERE `ProjectID` = projid AND `CreatorID` = creatorid;"
+        $stmt=$this->_db->prepare("DELETE FROM Project WHERE ProjectID = :projid AND CreatorID = :creatorid;");
+
+
+        $stmt->execute(array(
+            ':projid'=>$projid,
+            ':creatorid'=>$creatorid));
+//        $query="Delete From `Friendship` Where RecipientID in (select UserID From `User` Where First_Name=".$firstname.
+//        "and Last_Name=".$lastname." and SenderID in (select UserID from `User` where username=".$username;
+//
+//         $this->_db->query("DEALLOCATE PREPARE stmt");
 
 
     }

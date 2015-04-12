@@ -25,7 +25,7 @@ require('layout/header.php');
                 </br>
             </p>
 
-
+            <p><a href='projects.php'>Manage Your Projects</a></p>
             <p><a href='friends.php'>Manage Friends List</a></p>
             <p><a href='profile.php'>View/Edit Profile Info</a></p>
             <p><a href='resetpass.php'>Reset Your Password</a></p>

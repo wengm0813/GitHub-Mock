@@ -29,6 +29,19 @@ if(isset($_POST['submit'])){
 		$error[] = 'Passwords do not match.';
 	}
 
+
+    if (strlen($_POST['email']) == 0){
+        $error[] = 'Email is empty.';
+
+    }
+
+
+    else {
+        $email = $_POST['email'];
+
+    }
+
+
     if (strlen($_POST['firstName']) == 0) {
         $error[] = 'Please enter your first name.';
     }
@@ -44,16 +57,24 @@ if(isset($_POST['submit'])){
 
     else {
         $lastName = $_POST['lastName'];
+
     }
 
-    if (strlen($_POST['middleName']) < 0) {
+    if (strlen($_POST['middleName']) > 1) {
+        $error[] = 'Middle Initial just 1 character.';
+    }
+
+    if (strlen($_POST['middleName']) == 0) {
         $middleName = "";}
     else {
         $middleName = $_POST['middleName'];
 
     }
 
-    if (strlen($_POST['homeTownCity']) < 0) {
+
+
+
+    if (strlen($_POST['homeTownCity']) == 0) {
         $error[] = 'Please enter your home city.';}
 
     else{
@@ -76,6 +97,14 @@ if(isset($_POST['submit'])){
 
     }
 
+    if(!isset($_POST['interest'])){
+        $error[] = "Please choose at least one interest";
+    }
+    else
+    {
+        $checkbox1 = $_POST['interest'];
+    }
+
 
 
 	//if no errors have been created carry on
@@ -95,7 +124,7 @@ if(isset($_POST['submit'])){
             $stmt->execute(array(
                 ':username' => $_POST['username'],
                 ':password' => $hashedpassword,
-                ':email' => $_POST['email'],
+                ':email' => $email,
                 ':firstName' => $firstName,
                 ':middleName' => $middleName,
                 ':lastName' => $lastName,
@@ -108,7 +137,6 @@ if(isset($_POST['submit'])){
 
             ));
             $id = $db->lastInsertId();
-            $checkbox1 = $_POST['interest'];
             foreach($checkbox1 as $value){
                 //echo $checkbox1[i];
                 IF ($value =="")
