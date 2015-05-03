@@ -1,1 +1,1 @@
-live version available at: <link>cse480.wengmin.me<link>
+live version available at [here](cse480.wengmin.me)
